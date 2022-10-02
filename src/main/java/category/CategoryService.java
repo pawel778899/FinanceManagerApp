@@ -16,7 +16,7 @@ public class CategoryService {
 
     public void deleteCategory(String categoryName) {
         Category category = categoryRepository.findByName(categoryName);
-        if (category != null && category.getExpenses() == null) {
+        if (category != null && (category.getExpenses() == null || category.getExpenses().isEmpty())) {
             categoryRepository.delete(category);
         }
     }

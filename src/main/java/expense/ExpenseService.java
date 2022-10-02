@@ -2,8 +2,13 @@ package expense;
 
 import category.Category;
 import category.CategoryRepository;
+import income.Income;
+import income.IncomeDto;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ExpenseService {
 
@@ -24,7 +29,17 @@ public class ExpenseService {
         expense.setComment(expenseDto.getComment());
         expenseRepository.insert(expense);
     }
-
+    public void deleteExpense(Long expensedToBeDeleted) {
+        if (expensedToBeDeleted != null) {
+            expenseRepository.deleteById(expensedToBeDeleted);
+        }
+    }
+    public Set<ExpenseDto> getExpenses() {
+        List<Expense> expenses = expenseRepository.findAll();
+        return expenses.stream()
+                .map(expense -> new ExpenseDto(expense.getAmount(),expense.getComment(), expense.getCategory().getName()))
+                .collect(Collectors.toSet());
+    }
 }
 
 
