@@ -21,7 +21,7 @@ public class ExpenseService {
         expense.setAmount(expenseDto.getAmount());
         expense.setCategory(byName);
         expense.setExpenseAddDate(LocalDate.now());
-        expense.setComment(expense.getComment());
+        expense.setComment(expenseDto.getComment());
         expenseRepository.insert(expense);
     }
 

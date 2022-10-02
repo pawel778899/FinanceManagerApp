@@ -29,7 +29,7 @@ public class Expense {
     @Column(name = "expense_add_date")
     private LocalDate expenseAddDate;
 
-    @ManyToOne(cascade = CascadeType.ALL) // dużo wydatków do 1 pozycji np. transport
+    @ManyToOne // dużo wydatków do 1 pozycji np. transport
     @JoinColumn(name = "category_id")
 
     private Category category;

@@ -21,7 +21,8 @@ public class Category {
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "category")
+
     private Set<Expense> expenses;
 
     public Category(String name) {
