@@ -1,19 +1,20 @@
-package expense;
+package modeldto;
 
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Data
-public class ExpenseDto {
+public class IncomeDto {
     private Long id;
     private BigDecimal amount;
     private String comment;
-    private String category;
 
-    public ExpenseDto(BigDecimal amount, String comment, String category) {
+    private LocalDate date;
+
+    public IncomeDto(BigDecimal amount, String comment) {
         this.amount = amount;
         this.comment = comment;
-        this.category = category;
     }
 }

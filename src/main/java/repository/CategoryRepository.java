@@ -1,7 +1,8 @@
-package category;
+package repository;
 
 import config.ConnectionManager;
 import jakarta.persistence.EntityManager;
+import model.Category;
 
 public class CategoryRepository {
 

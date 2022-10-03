@@ -1,7 +1,8 @@
-package income;
+package repository;
 
 import config.ConnectionManager;
 import jakarta.persistence.EntityManager;
+import model.Income;
 
 import java.util.List;
 

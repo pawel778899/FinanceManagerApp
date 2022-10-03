@@ -1,9 +1,10 @@
-package expense;
+package service;
 
-import category.Category;
-import category.CategoryRepository;
-import income.Income;
-import income.IncomeDto;
+import modeldto.ExpenseDto;
+import model.Category;
+import repository.CategoryRepository;
+import model.Expense;
+import repository.ExpenseRepository;
 
 import java.time.LocalDate;
 import java.util.List;

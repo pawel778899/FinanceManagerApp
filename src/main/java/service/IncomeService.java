@@ -1,8 +1,8 @@
-package income;
+package service;
 
-import config.ConnectionManager;
-import jakarta.persistence.EntityManager;
-import org.jetbrains.annotations.NotNull;
+import modeldto.IncomeDto;
+import model.Income;
+import repository.IncomeRepository;
 
 import java.util.List;
 import java.util.Set;
@@ -32,11 +32,5 @@ public class IncomeService {
                 .map(i->new IncomeDto(i.getAmount(), i.getComment()))
                 .collect(Collectors.toSet());
     }
-//    public Set<PrintIncomeDto> getIncomes() {
-//        List<Income> incomes = incomeRepository.findAll();
-//        return incomes.stream()
-//                .map(income -> new PrintIncomeDto(income.getId(), income.getAmount().toString() + " zł", income.getComment(), income.getIncomeAddDate().toString()))
-//                .collect(Collectors.toSet());
-//    }
 }
 

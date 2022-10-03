@@ -14,8 +14,8 @@
         <property name="hibernate.hbm2ddl.auto">validate</property>
         <property name="javax.persistence.sql-load-script-source">META-INF/dml.sql" </property>
 
-        <mapping class="category.Category"/>
-        <mapping class="expense.Expense"/>
-        <mapping class="income.Income"/>
+        <mapping class="model.Category"/>
+        <mapping class="model.Expense"/>
+        <mapping class="model.Income"/>
     </session-factory>
 </hibernate-configuration>

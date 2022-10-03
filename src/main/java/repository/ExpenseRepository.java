@@ -1,7 +1,8 @@
-package expense;
+package repository;
 
 import config.ConnectionManager;
 import jakarta.persistence.EntityManager;
+import model.Expense;
 
 import java.util.List;
 

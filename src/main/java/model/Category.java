@@ -1,6 +1,5 @@
-package category;
+package model;
 
-import expense.Expense;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

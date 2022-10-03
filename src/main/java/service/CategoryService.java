@@ -1,4 +1,7 @@
-package category;
+package service;
+
+import model.Category;
+import repository.CategoryRepository;
 
 public class CategoryService {
 
