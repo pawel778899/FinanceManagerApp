@@ -1,3 +1,4 @@
+import Control.FinanceManagerControl;
 import config.ConnectionManager;
 import jakarta.persistence.EntityManager;
 
@@ -6,7 +7,7 @@ public class FinanceManagerAppMenu {
         EntityManager entityManager = ConnectionManager.getEntityManager();
         entityManager.close();
 
-        final String appName = "FinanceManager v1.0";
+        final String appName = "FinanceManager v2.0";
         System.out.println(appName);
         FinanceManagerControl financeManagerControl = new FinanceManagerControl();
         financeManagerControl.controlLoop();

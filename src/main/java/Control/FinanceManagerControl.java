@@ -1,3 +1,6 @@
+package Control;
+
+import io.DataReader;
 import modeldto.ExpenseDto;
 import modeldto.IncomeDto;
 import repository.CategoryRepository;
@@ -12,6 +15,8 @@ import java.math.RoundingMode;
 import java.util.Scanner;
 import java.util.Set;
 
+import static Control.Option.EXIT;
+
 public class FinanceManagerControl {
 
     private static final CategoryRepository categoryRepository = new CategoryRepository();
@@ -22,8 +27,8 @@ public class FinanceManagerControl {
     private static final IncomeService incomeService = new IncomeService(incomeRepository);
 
 
-    // stałe do kontrolowania programu
-    private static final int EXIT = 0;
+     //Static variables to control program
+//    private static final int EXIT = 0;  - zakomentowane bo while (option != EXIT); mie działa EXIT = Option albo int
     private static final int ADD_EXPENSE = 1;
     private static final int ADD_INCOME = 2;
     private static final int DELETE_EXPENSE = 3;
@@ -32,41 +37,48 @@ public class FinanceManagerControl {
     private static final int DISPLAY_ALL_EXPENSES = 6;
     private static final int DISPLAY_ALL_INCOMES = 7;
     private static final int DISPLAY_BALANCE = 8;
-    private static final int DISPLAY_ALL_EXPENSES_GRUPING_BY_CATEGORY = 9;
+    private static final int DISPLAY_ALL_EXPENSES_GROUPING_BY_CATEGORY = 9;
     private static final int DISPLAY_ALL_EXPENSES_BETWEEN_DATES = 10;
     private static final int ADD_NEW_CATEGORY = 11;
     private static final int DELETE_CATEGORY = 12;
 
-    private Scanner in = new Scanner(System.in);
+    private Scanner scanner = new Scanner(System.in);
     public void controlLoop() {
-        int option;
+        Option option;
 
         do {
             printOptions();
-            option = getInt();
+            option = Option.createFromInt(getInt());
             switch (option) {
-                case EXIT -> exit();
+                case EXIT -> exitAppMenu();
                 case ADD_EXPENSE -> addExpenseMenu();
                 case ADD_INCOME -> addIncomeMenu();
-                case DELETE_EXPENSE -> deleteExepenseMenu();
+                case DELETE_EXPENSE -> deleteExpenseMenu();
                 case DELETE_INCOME -> deletedIncomeMenu();
                 //case DISPLAY_ALL_EXPENSES_AND_INCOMES -> displayAllExpensesAndIncomes();
-                case DISPLAY_ALL_EXPENSES -> displayAllExpenses();
-                case DISPLAY_ALL_INCOMES -> displayAllIncomes();
+                case DISPLAY_ALL_EXPENSES -> displayAllExpensesMenu();
+                case DISPLAY_ALL_INCOMES -> displayAllIncomesMenu();
                 //case DISPLAY_BALANCE -> displayAllBalance();
-                //case DISPLAY_ALL_EXPENSES_GRUPING_BY_CATEGORY -> displayAllExpensesGroupingByCategory();
+                //case DISPLAY_ALL_EXPENSES_GROUPING_BY_CATEGORY -> displayAllExpensesGroupingByCategory();
                 //case DISPLAY_ALL_EXPENSES_BETWEEN_DATES -> displayAllExpensesBetweenDates();
-                case ADD_NEW_CATEGORY -> addNewCategory();
-                case DELETE_CATEGORY -> deleteCategory();
-                default -> System.out.println("Nie ma takiej opcji, wprowadź ponownie: ");
+                case ADD_NEW_CATEGORY -> addNewCategoryMenu();
+                case DELETE_CATEGORY -> deleteCategoryMenu();
+                default -> System.out.println("Choose number from 0 - 12 !!!!! ");
             }
         } while (option != EXIT);
     }
 
 
-    public void printOptions() {
+    private void printOptions() {
+        System.out.println("[***]>>>>>>>>>>Type the operation to execution: <<<<<<<<<<[***]");
+        for (Option value : Option.values()) {
+            System.out.println(value);
+        }
+    }
 
-        System.out.println("Type the operation to execution: ");
+    public void printOptions2() {
+
+        System.out.println("[***]>>>>>>>>>>Type the operation to execution: <<<<<<<<<<[***]");
         System.out.println(EXIT + " - Exit");
         System.out.println(ADD_EXPENSE + " - Add expense");
         System.out.println(ADD_INCOME + " - Add income");
@@ -76,7 +88,7 @@ public class FinanceManagerControl {
         System.out.println(DISPLAY_ALL_EXPENSES + " - Display all expenses");
         System.out.println(DISPLAY_ALL_INCOMES + " - Display all incomes");
         System.out.println(DISPLAY_BALANCE + " - Display balance");
-        System.out.println(DISPLAY_ALL_EXPENSES_GRUPING_BY_CATEGORY + " - Display all expenses grouping by category");
+        System.out.println(DISPLAY_ALL_EXPENSES_GROUPING_BY_CATEGORY + " - Display all expenses grouping by category");
         System.out.println(DISPLAY_ALL_EXPENSES_BETWEEN_DATES + " - Display all expenses between dates");
         System.out.println(ADD_NEW_CATEGORY + " - Add new category");
         System.out.println(DELETE_CATEGORY + " - Delete category");
@@ -84,45 +96,52 @@ public class FinanceManagerControl {
 
     public void addExpenseMenu() {
         System.out.println("Type expense amount: ");
-        BigDecimal totalCost = new BigDecimal(String.valueOf(in.nextBigDecimal())).setScale(2, RoundingMode.CEILING);
-        in.nextLine();
+        BigDecimal totalCost = new BigDecimal(String.valueOf(scanner.nextBigDecimal())).setScale(2, RoundingMode.CEILING);
+        scanner.nextLine();
         System.out.println("Type expense category: ");
-        String category = in.nextLine();
+        String category = scanner.nextLine();
         System.out.println("Type comment (optionally): ");
-        String comment = in.nextLine();
+        String comment = scanner.nextLine();
         ExpenseDto expenseDto = new ExpenseDto(totalCost, comment, category);
-        expenseService.addExpense(expenseDto);
+        try {
+            expenseService.addExpense(expenseDto);
+        } catch (IllegalArgumentException e) {
+            System.err.println(e.getMessage());
+        }
     }
-
+/*IllegalArgumentException is a Java exception indicating that a method has received an argument that is invalid or inappropriate for this method's purposes.*/
     public void addIncomeMenu() {
         System.out.println("Type income amount: ");
-        BigDecimal totalCost = new BigDecimal(String.valueOf(in.nextBigDecimal()));
+        BigDecimal totalCost = new BigDecimal(String.valueOf(scanner.nextBigDecimal()));
         System.out.println("Type comment (optionally): ");
-        String comment = in.next();
+        String comment = scanner.next();
         IncomeDto incomeDto = new IncomeDto(totalCost, comment);
-        incomeService.addIncome(incomeDto);
+        try {
+            incomeService.addIncome(incomeDto);
+        } catch (IllegalArgumentException e) {
+            System.err.println(e.getMessage());
+        }
     }
-
-    public void deleteExepenseMenu() {
+    public void deleteExpenseMenu() {
         System.out.println("Type expense id which you want to delete: ");
-        Long expensedToBeDeleted = in.nextLong();
-        expenseService.deleteExpense(expensedToBeDeleted);
+        Long expenseToBeDeleted = scanner.nextLong();
+        expenseService.deleteExpense(expenseToBeDeleted);
     }
 
     public void deletedIncomeMenu() {
         System.out.println("Type income id which you want to delete: ");
-        Long incomeIdToBeDeleted = in.nextLong();
+        Long incomeIdToBeDeleted = scanner.nextLong();
         incomeService.deleteIncome(incomeIdToBeDeleted);
     }
 
     //public void displayAllBalance() {}
-    public void displayAllExpenses() {
+    public void displayAllExpensesMenu() {
         Set<ExpenseDto> expenses = expenseService.getExpenses();
         System.out.println(expenses);
     }
 
     //public void displayAllExpensesAndIncomes (){}
-    public void displayAllIncomes() {
+    public void displayAllIncomesMenu() {
         Set<IncomeDto> incomes = incomeService.getIncomes();
         System.out.println((incomes));
     }
@@ -131,31 +150,30 @@ public class FinanceManagerControl {
 //    public void displayAllExpensesGroupingByCategory() {}
 //    public void displayAllExpensesBetweenDates() {}
 
-    public void addNewCategory() {
+    public void addNewCategoryMenu() {
         System.out.println("Type category name: ");
-        String categoryName = in.nextLine();
+        String categoryName = scanner.nextLine();
         categoryService.addCategory(categoryName);
     }
 
-    public void deleteCategory() {
+    public void deleteCategoryMenu() {
         System.out.println("Delete category name: ");
-        String categoryName = in.nextLine();
+        String categoryName = scanner.nextLine();
         categoryService.deleteCategory(categoryName);
     }
 
-    private void exit() {
+    private void exitAppMenu() {
         System.out.println("Koniec programu, papa!");
-        // zamykamy strumień wejścia
-        close();
+        close(); // close input stream
     }
 
     public void close() {
-        in.close();
+        scanner.close();
     }
 
     public int getInt() {
-        int number = in.nextInt();
-        in.nextLine();
+        int number = scanner.nextInt();
+        scanner.nextLine();
         return number;
     }
 }
