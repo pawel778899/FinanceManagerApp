@@ -2,8 +2,9 @@ import Control.FinanceManagerControl;
 import config.ConnectionManager;
 import jakarta.persistence.EntityManager;
 
-public class FinanceManagerAppMenu {
+public class FinanceManagerApp {
     public static void main(String[] args) {
+
         EntityManager entityManager = ConnectionManager.getEntityManager();
         entityManager.close();
 

@@ -3,12 +3,15 @@ package Control;
 import io.DataReader;
 import modeldto.ExpenseDto;
 import modeldto.IncomeDto;
+import modeldto.SummaryDto;
+import modeldto.SummaryExtendDtos;
 import repository.CategoryRepository;
 import repository.ExpenseRepository;
 import repository.IncomeRepository;
 import service.CategoryService;
 import service.ExpenseService;
 import service.IncomeService;
+import service.SummaryService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -25,24 +28,27 @@ public class FinanceManagerControl {
     private static final ExpenseService expenseService = new ExpenseService(expenseRepository, categoryRepository);
     private static final IncomeRepository incomeRepository = new IncomeRepository();
     private static final IncomeService incomeService = new IncomeService(incomeRepository);
+    private  static final SummaryService summaryService = new SummaryService(expenseRepository,incomeRepository);
 
 
      //Static variables to control program
 //    private static final int EXIT = 0;  - zakomentowane bo while (option != EXIT); mie działa EXIT = Option albo int
-    private static final int ADD_EXPENSE = 1;
-    private static final int ADD_INCOME = 2;
-    private static final int DELETE_EXPENSE = 3;
-    private static final int DELETE_INCOME = 4;
-    private static final int DISPLAY_ALL_EXPENSES_AND_INCOMES = 5;
-    private static final int DISPLAY_ALL_EXPENSES = 6;
-    private static final int DISPLAY_ALL_INCOMES = 7;
-    private static final int DISPLAY_BALANCE = 8;
-    private static final int DISPLAY_ALL_EXPENSES_GROUPING_BY_CATEGORY = 9;
-    private static final int DISPLAY_ALL_EXPENSES_BETWEEN_DATES = 10;
-    private static final int ADD_NEW_CATEGORY = 11;
-    private static final int DELETE_CATEGORY = 12;
+//    private static final int ADD_EXPENSE = 1;
+//    private static final int ADD_INCOME = 2;
+//    private static final int DELETE_EXPENSE = 3;
+//    private static final int DELETE_INCOME = 4;
+//    private static final int DISPLAY_ALL_EXPENSES_AND_INCOMES = 5;
+//    private static final int DISPLAY_ALL_EXPENSES = 6;
+//    private static final int DISPLAY_ALL_INCOMES = 7;
+//    private static final int DISPLAY_BALANCE = 8;
+//    private static final int DISPLAY_ALL_EXPENSES_GROUPING_BY_CATEGORY = 9;
+//    private static final int DISPLAY_ALL_EXPENSES_BETWEEN_DATES = 10;
+//    private static final int ADD_NEW_CATEGORY = 11;
+//    private static final int DELETE_CATEGORY = 12;
 
     private Scanner scanner = new Scanner(System.in);
+//    DataReader dataReader = new DataReader();
+
     public void controlLoop() {
         Option option;
 
@@ -55,10 +61,10 @@ public class FinanceManagerControl {
                 case ADD_INCOME -> addIncomeMenu();
                 case DELETE_EXPENSE -> deleteExpenseMenu();
                 case DELETE_INCOME -> deletedIncomeMenu();
-                //case DISPLAY_ALL_EXPENSES_AND_INCOMES -> displayAllExpensesAndIncomes();
+                case DISPLAY_ALL_EXPENSES_AND_INCOMES -> displayAllExpensesAndIncomesMenu();
                 case DISPLAY_ALL_EXPENSES -> displayAllExpensesMenu();
                 case DISPLAY_ALL_INCOMES -> displayAllIncomesMenu();
-                //case DISPLAY_BALANCE -> displayAllBalance();
+                case DISPLAY_BALANCE -> displayAllBalanceMenu();
                 //case DISPLAY_ALL_EXPENSES_GROUPING_BY_CATEGORY -> displayAllExpensesGroupingByCategory();
                 //case DISPLAY_ALL_EXPENSES_BETWEEN_DATES -> displayAllExpensesBetweenDates();
                 case ADD_NEW_CATEGORY -> addNewCategoryMenu();
@@ -67,8 +73,6 @@ public class FinanceManagerControl {
             }
         } while (option != EXIT);
     }
-
-
     private void printOptions() {
         System.out.println("[***]>>>>>>>>>>Type the operation to execution: <<<<<<<<<<[***]");
         for (Option value : Option.values()) {
@@ -76,23 +80,23 @@ public class FinanceManagerControl {
         }
     }
 
-    public void printOptions2() {
-
-        System.out.println("[***]>>>>>>>>>>Type the operation to execution: <<<<<<<<<<[***]");
-        System.out.println(EXIT + " - Exit");
-        System.out.println(ADD_EXPENSE + " - Add expense");
-        System.out.println(ADD_INCOME + " - Add income");
-        System.out.println(DELETE_EXPENSE + " - Delete expense");
-        System.out.println(DELETE_INCOME + " - Delete income");
-        System.out.println(DISPLAY_ALL_EXPENSES_AND_INCOMES + " - Display all expenses and incomes");
-        System.out.println(DISPLAY_ALL_EXPENSES + " - Display all expenses");
-        System.out.println(DISPLAY_ALL_INCOMES + " - Display all incomes");
-        System.out.println(DISPLAY_BALANCE + " - Display balance");
-        System.out.println(DISPLAY_ALL_EXPENSES_GROUPING_BY_CATEGORY + " - Display all expenses grouping by category");
-        System.out.println(DISPLAY_ALL_EXPENSES_BETWEEN_DATES + " - Display all expenses between dates");
-        System.out.println(ADD_NEW_CATEGORY + " - Add new category");
-        System.out.println(DELETE_CATEGORY + " - Delete category");
-    }
+//    public void printOptions2() {
+//
+//        System.out.println("[***]>>>>>>>>>>Type the operation to execution: <<<<<<<<<<[***]");
+//        System.out.println(EXIT + " - Exit");
+//        System.out.println(ADD_EXPENSE + " - Add expense");
+//        System.out.println(ADD_INCOME + " - Add income");
+//        System.out.println(DELETE_EXPENSE + " - Delete expense");
+//        System.out.println(DELETE_INCOME + " - Delete income");
+//        System.out.println(DISPLAY_ALL_EXPENSES_AND_INCOMES + " - Display all expenses and incomes");
+//        System.out.println(DISPLAY_ALL_EXPENSES + " - Display all expenses");
+//        System.out.println(DISPLAY_ALL_INCOMES + " - Display all incomes");
+//        System.out.println(DISPLAY_BALANCE + " - Display balance");
+//        System.out.println(DISPLAY_ALL_EXPENSES_GROUPING_BY_CATEGORY + " - Display all expenses grouping by category");
+//        System.out.println(DISPLAY_ALL_EXPENSES_BETWEEN_DATES + " - Display all expenses between dates");
+//        System.out.println(ADD_NEW_CATEGORY + " - Add new category");
+//        System.out.println(DELETE_CATEGORY + " - Delete category");
+//    }
 
     public void addExpenseMenu() {
         System.out.println("Type expense amount: ");
@@ -133,21 +137,29 @@ public class FinanceManagerControl {
         Long incomeIdToBeDeleted = scanner.nextLong();
         incomeService.deleteIncome(incomeIdToBeDeleted);
     }
-
-    //public void displayAllBalance() {}
     public void displayAllExpensesMenu() {
         Set<ExpenseDto> expenses = expenseService.getExpenses();
         System.out.println(expenses);
     }
 
-    //public void displayAllExpensesAndIncomes (){}
+    public void displayAllExpensesAndIncomesMenu(){
+        SummaryDto summary = summaryService.getSummary();
+        System.out.println(summary);
+     }
     public void displayAllIncomesMenu() {
         Set<IncomeDto> incomes = incomeService.getIncomes();
         System.out.println((incomes));
     }
-    //public void displayAllBalance() {}
+    public void displayAllBalanceMenu() {
+        String balance = summaryService.getBalance();
+        System.out.println(balance +" zł");
+    }
 
-//    public void displayAllExpensesGroupingByCategory() {}
+//    public void displayAllExpensesGroupingByCategory() {
+//        SummaryExtendDtos summaryExtendDtos = summaryService.summaryExtendDtos();
+//        System.out.println(summaryExtendDtos);
+//
+//    }
 //    public void displayAllExpensesBetweenDates() {}
 
     public void addNewCategoryMenu() {
@@ -155,6 +167,7 @@ public class FinanceManagerControl {
         String categoryName = scanner.nextLine();
         categoryService.addCategory(categoryName);
     }
+
 
     public void deleteCategoryMenu() {
         System.out.println("Delete category name: ");

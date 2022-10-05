@@ -21,7 +21,6 @@ public class Expense {
 
     @Column(name = "amount")
     private BigDecimal amount;
-
     @Column(name = "comment")
     private String comment;
 

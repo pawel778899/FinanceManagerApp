@@ -19,10 +19,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
     @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
     private Set<Expense> expenses;
-
     public Category(String name) {
         this.name = name;
     }
