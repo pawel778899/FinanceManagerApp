@@ -30,6 +30,14 @@ public class Income {
         this.comment = comment;
         this.incomeAddDate = LocalDate.now();
     }
+
+    public Income(BigDecimal amount, String comment, Account account) {
+        this.amount = amount;
+        this.comment = comment;
+        this.account = account;
+        this.incomeAddDate = LocalDate.now();
+    }
+
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;

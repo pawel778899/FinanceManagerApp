@@ -1,5 +1,6 @@
 package income;
 
+import account.Account;
 import config.ConnectionManager;
 import jakarta.persistence.EntityManager;
 
@@ -34,5 +35,8 @@ public class IncomeRepository {
         entityManager.close();
         return incomes;
     }
+
+
+
 
 }

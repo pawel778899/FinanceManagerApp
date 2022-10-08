@@ -11,9 +11,10 @@ public class AccountService {
     public AccountService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
-    public void addAccount(String name) {
+    public void addAccount(String name,String accountNumber) {
         Account account = new Account();
-        account.setAccountNumber(name);
+        account.setName(name);
+        account.setAccountNumber(accountNumber);
         accountRepository.insert(account);
     }
     public void deleteAccount(String accountName) {
@@ -27,5 +28,11 @@ public class AccountService {
         return accounts.stream()
                 .map(account -> new Account(account.getId(),account.getAccountNumber(), account.getName()))
                 .collect(Collectors.toSet());
+    }
+    public List<AccountDto> getAllAccounts() {
+        List<Account> allAccounts = accountRepository.findAllAccounts();
+        return allAccounts.stream()
+                .map(account -> new AccountDto(account.getId(), account.getAccountNumber(), account.getName()))
+                .collect(Collectors.toList());
     }
 }

@@ -1,6 +1,8 @@
 import account.Account;
+import account.AccountDto;
 import account.AccountRepository;
 import account.AccountService;
+import category.Category;
 import category.CategoryRepository;
 import category.CategoryService;
 import config.ConnectionManager;
@@ -16,6 +18,7 @@ import jakarta.persistence.EntityManager;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -25,11 +28,12 @@ public class Main {
     private static final CategoryRepository categoryRepository = new CategoryRepository();
     private static final CategoryService categoryService = new CategoryService(categoryRepository);
     private static final ExpenseRepository expenseRepository = new ExpenseRepository();
-    private static final ExpenseService expenseService = new ExpenseService(expenseRepository, categoryRepository);
     private static final IncomeRepository incomeRepository = new IncomeRepository();
-    private static final IncomeService incomeService = new IncomeService(incomeRepository);
     private static final AccountRepository accountRepository = new AccountRepository();
+    private static final IncomeService incomeService = new IncomeService(incomeRepository, accountRepository);
+
     private static final AccountService accountService = new AccountService(accountRepository);
+    private static final ExpenseService expenseService = new ExpenseService(expenseRepository, categoryRepository,accountRepository);
 
 
     public static void main(String[] args) {
@@ -60,8 +64,10 @@ public class Main {
             System.out.println("13 - Add account");
             System.out.println("14 - Delete account");
             System.out.println("15 - Display all accounts");
+            System.out.println("16 - Add income to account");
+            System.out.println("17 - Add expense to account");
 
-
+            List<String> accounts2;
 
             int result = in.nextInt();
             in.nextLine();
@@ -107,8 +113,6 @@ public class Main {
                     Set<IncomeDto> incomes = incomeService.getIncomes();
                     System.out.println((incomes));
                 }
-
-
                 case 11 -> {
                     System.out.println("Type category name: ");
                     String categoryName = in.nextLine();
@@ -120,9 +124,11 @@ public class Main {
                     categoryService.deleteCategory(categoryName);
                 }
                 case 13 -> {
-                    System.out.println("Add account: ");
+                    System.out.println("Type account number: ");
+                    String accountNumber = in.nextLine();
+                    System.out.println("Type account name: ");
                     String accountName = in.nextLine();
-                    accountService.addAccount(accountName);
+                    accountService.addAccount(accountName,accountNumber);
                 }
                 case 14 -> {
                     System.out.println("Delete account name: ");
@@ -133,8 +139,41 @@ public class Main {
                     Set<Account> accounts = accountService.getAccount();
                     System.out.println(accounts.toString());
                 }
+                case 16 -> {
+                    System.out.println("Which account ?: Type id.");
+                    List<AccountDto> allAccounts = accountService.getAllAccounts();
+                    allAccounts.forEach(accountDto -> {
+                        System.out.println("Id: " + accountDto.getId() + " accountNumber " + accountDto.getAccountNumber() + " accountName " + accountDto.getName());
+                    });
+                    Long accountId = in.nextLong();
+                    System.out.println("Type income amount: ");
+                    BigDecimal totalCost = new BigDecimal(String.valueOf(in.nextBigDecimal()));
+                    System.out.println("Type comment (optionally): ");
+                    String comment = in.next();
+                    IncomeDto incomeDto = new IncomeDto(totalCost, comment, accountId);
+                    incomeService.addIncomeWithAccount(incomeDto);
+                    }
+                case 17 -> {
+                    System.out.println("Which account ?: Type id.");
+                    List<AccountDto> allAccounts = accountService.getAllAccounts();
+                    allAccounts.forEach(accountDto -> {
+                        System.out.println("Id: " + accountDto.getId() + " accountNumber " + accountDto.getAccountNumber() + " accountName " + accountDto.getName());
+                    });
+                    Long accountId = in.nextLong();
+                    System.out.println("Type expense amount: ");
+                    BigDecimal totalCost = new BigDecimal(String.valueOf(in.nextBigDecimal())).setScale(2, RoundingMode.CEILING);
+                    in.nextLine();
+                    System.out.println("Type expense category: ");
+                    String category = in.nextLine();
+                    System.out.println("Type comment (optionally): ");
+                    String comment = in.nextLine();
+                    ExpenseDto expenseDto = new ExpenseDto(totalCost, comment, category,accountId);
+                    expenseService.addExpenseWithAccount(expenseDto);
+                }
+                case 18 -> {
 
-                default -> System.out.println("Choose number from 0 - 15 !!!!! ");
+                }
+                default -> System.out.println("Choose number from 0 - 18 !!!!! ");
             }
         }
     }

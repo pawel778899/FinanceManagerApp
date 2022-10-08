@@ -3,6 +3,7 @@ package account;
 import category.Category;
 import config.ConnectionManager;
 import expense.Expense;
+import income.Income;
 import jakarta.persistence.EntityManager;
 
 import java.util.List;
@@ -36,6 +37,20 @@ public class AccountRepository {
         EntityManager entityManager = ConnectionManager.getEntityManager();
         Account account = entityManager.createQuery("SELECT a FROM Account a WHERE a.name=:param", Account.class)
                 .setParameter("param", name).getSingleResult();
+        entityManager.close();
+        return account;
+    }
+    public List<Account> findAllAccounts() {
+        EntityManager entityManager = ConnectionManager.getEntityManager();
+        List resultList = entityManager.createQuery("select a from Account a").getResultList();
+        entityManager.close();
+        return resultList;
+    }
+
+    public Account findById(Long accountId) {
+        EntityManager entityManager = ConnectionManager.getEntityManager();
+        Account account = entityManager.createQuery("SELECT a FROM Account a WHERE a.id=:param", Account.class)
+                .setParameter("param", accountId).getSingleResult();
         entityManager.close();
         return account;
     }

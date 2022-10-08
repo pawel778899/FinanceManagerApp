@@ -23,7 +23,7 @@ public class Account {
 
     @Column(name = "account_number")
     private String accountNumber;
-
+    @Column(name = "name")
     private String name;
 
     public Account(Long id, String accountNumber, String name) {

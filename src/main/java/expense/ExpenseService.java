@@ -1,5 +1,7 @@
 package expense;
 
+import account.Account;
+import account.AccountRepository;
 import category.Category;
 import category.CategoryRepository;
 import income.Income;
@@ -14,10 +16,12 @@ public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
     private final CategoryRepository categoryRepository;
+    private AccountRepository accountRepository;
 
-    public ExpenseService(ExpenseRepository expenseRepository, CategoryRepository categoryRepository) {
+    public ExpenseService(ExpenseRepository expenseRepository, CategoryRepository categoryRepository, AccountRepository accountRepository) {
         this.expenseRepository = expenseRepository;
         this.categoryRepository = categoryRepository;
+        this.accountRepository = accountRepository;
     }
 
     public void addExpense(ExpenseDto expenseDto) {
@@ -40,6 +44,15 @@ public class ExpenseService {
                 .map(expense -> new ExpenseDto(expense.getAmount(),expense.getComment(), expense.getCategory().getName()))
                 .collect(Collectors.toSet());
     }
+
+    public void addExpenseWithAccount(ExpenseDto expenseDto) {
+        Account byId = accountRepository.findById(expenseDto.getAccountId());
+        Category byName = categoryRepository.findByName(expenseDto.getCategory());
+        Expense expense = new Expense(expenseDto.getAmount(),expenseDto.getComment(),byName,byId);
+        expenseRepository.insert(expense);
+    }
+
+
 }
 
 

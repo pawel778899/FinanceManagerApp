@@ -1,8 +1,7 @@
 package income;
 
-import config.ConnectionManager;
-import jakarta.persistence.EntityManager;
-import org.jetbrains.annotations.NotNull;
+import account.Account;
+import account.AccountRepository;
 
 import java.util.List;
 import java.util.Set;
@@ -11,9 +10,11 @@ import java.util.stream.Collectors;
 public class IncomeService {
 
     private IncomeRepository incomeRepository;
+    private AccountRepository accountRepository;
 
-    public IncomeService(IncomeRepository incomeRepository) {
+    public IncomeService(IncomeRepository incomeRepository, AccountRepository accountRepository) {
         this.incomeRepository = incomeRepository;
+        this.accountRepository = accountRepository;
     }
 
     public void addIncome(IncomeDto incomeDto) {
@@ -32,11 +33,10 @@ public class IncomeService {
                 .map(i->new IncomeDto(i.getAmount(), i.getComment()))
                 .collect(Collectors.toSet());
     }
-//    public Set<PrintIncomeDto> getIncomes() {
-//        List<Income> incomes = incomeRepository.findAll();
-//        return incomes.stream()
-//                .map(income -> new PrintIncomeDto(income.getId(), income.getAmount().toString() + " zł", income.getComment(), income.getIncomeAddDate().toString()))
-//                .collect(Collectors.toSet());
-//    }
+    public void addIncomeWithAccount(IncomeDto incomeDto) {
+        Account byId = accountRepository.findById(incomeDto.getAccountId());
+        Income income = new Income(incomeDto.getAmount(), incomeDto.getComment(),byId);
+        incomeRepository.insert(income);
+    }
 }
 

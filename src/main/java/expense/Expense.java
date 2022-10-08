@@ -37,11 +37,23 @@ public class Expense {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    public Expense(BigDecimal amount, String comment, Category category) {
+    public Expense(BigDecimal amount, String comment, Category category,Account account) {
         this.amount = amount;
         this.comment = comment;
         this.category = category;
+        this.account = account;
         this.expenseAddDate = LocalDate.now();
     }
 
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
 }
