@@ -91,7 +91,7 @@ public class FinanceManagerControl {
     }
 
     private void printOptions() {
-        printer.printLine("[*******]>>>>>>>>>>Type the operation to execution: <<<<<<<<<<[***]");
+        printer.printLine("[*******]>>>>>>>>>>Type the operation to execution: <<<<<<<<<<[*******]");
         for (Option option : Option.values()) {
             printer.printLine(option.toString());
         }

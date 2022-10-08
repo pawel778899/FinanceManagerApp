@@ -47,7 +47,7 @@ public class ExpenseRepository {
     }
     public List<Expense> findBetweenDates(LocalDate start, LocalDate end) {
         EntityManager entityManager = ConnectionManager.getEntityManager();
-        List<Expense> expenses = entityManager.createQuery("SELECT e FROM Expense e WHERE e.expanseAddDate>=?1 AND e.expanseAddDate<=?2")
+        List<Expense> expenses = entityManager.createQuery("SELECT e FROM Expense e WHERE e.expenseAddDate>=?1 AND e.expenseAddDate<=?2")
                 .setParameter(1, start)
                 .setParameter(2, end)
                 .getResultList();
