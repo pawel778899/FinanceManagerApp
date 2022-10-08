@@ -4,7 +4,7 @@
         "http://hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/finance-manager</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/finance-manager-2</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">778899</property>
         <property name="hibernate.show_sql">true</property>
@@ -17,5 +17,6 @@
         <mapping class="category.Category"/>
         <mapping class="expense.Expense"/>
         <mapping class="income.Income"/>
+        <mapping class="account.Account"/>
     </session-factory>
 </hibernate-configuration>

@@ -1,5 +1,6 @@
 package expense;
 
+import account.Account;
 import category.Category;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -31,8 +32,10 @@ public class Expense {
 
     @ManyToOne // dużo wydatków do 1 pozycji np. transport
     @JoinColumn(name = "category_id")
-
     private Category category;
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     public Expense(BigDecimal amount, String comment, Category category) {
         this.amount = amount;

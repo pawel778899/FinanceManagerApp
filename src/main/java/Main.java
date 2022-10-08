@@ -1,3 +1,6 @@
+import account.Account;
+import account.AccountRepository;
+import account.AccountService;
 import category.CategoryRepository;
 import category.CategoryService;
 import config.ConnectionManager;
@@ -25,6 +28,8 @@ public class Main {
     private static final ExpenseService expenseService = new ExpenseService(expenseRepository, categoryRepository);
     private static final IncomeRepository incomeRepository = new IncomeRepository();
     private static final IncomeService incomeService = new IncomeService(incomeRepository);
+    private static final AccountRepository accountRepository = new AccountRepository();
+    private static final AccountService accountService = new AccountService(accountRepository);
 
 
     public static void main(String[] args) {
@@ -52,6 +57,10 @@ public class Main {
             System.out.println("10 - Display all expenses between dates");
             System.out.println("11 - Add new category");
             System.out.println("12 - Delete category");
+            System.out.println("13 - Add account");
+            System.out.println("14 - Delete account");
+            System.out.println("15 - Display all accounts");
+
 
 
             int result = in.nextInt();
@@ -77,14 +86,14 @@ public class Main {
                     BigDecimal totalCost = new BigDecimal(String.valueOf(in.nextBigDecimal()));
                     System.out.println("Type comment (optionally): ");
                     String comment = in.next();
-                    IncomeDto incomeDto = new IncomeDto(totalCost,comment);
+                    IncomeDto incomeDto = new IncomeDto(totalCost, comment);
                     incomeService.addIncome(incomeDto);
                 }
                 case 3 -> {
-                        System.out.println("Type expense id which you want to delete: ");
-                        Long expensedToBeDeleted = in.nextLong();
-                        expenseService.deleteExpense(expensedToBeDeleted);
-                    }
+                    System.out.println("Type expense id which you want to delete: ");
+                    Long expensedToBeDeleted = in.nextLong();
+                    expenseService.deleteExpense(expensedToBeDeleted);
+                }
                 case 4 -> {
                     System.out.println("Type income id which you want to delete: ");
                     Long incomeIdToBeDeleted = in.nextLong();
@@ -100,8 +109,6 @@ public class Main {
                 }
 
 
-
-
                 case 11 -> {
                     System.out.println("Type category name: ");
                     String categoryName = in.nextLine();
@@ -112,8 +119,22 @@ public class Main {
                     String categoryName = in.nextLine();
                     categoryService.deleteCategory(categoryName);
                 }
-                default ->
-                    System.out.println("Choose number from 0 - 12 !!!!! ");
+                case 13 -> {
+                    System.out.println("Add account: ");
+                    String accountName = in.nextLine();
+                    accountService.addAccount(accountName);
+                }
+                case 14 -> {
+                    System.out.println("Delete account name: ");
+                    String accountName = in.nextLine();
+                    accountService.deleteAccount(accountName);
+                }
+                case 15 -> {
+                    Set<Account> accounts = accountService.getAccount();
+                    System.out.println(accounts.toString());
+                }
+
+                default -> System.out.println("Choose number from 0 - 15 !!!!! ");
             }
         }
     }

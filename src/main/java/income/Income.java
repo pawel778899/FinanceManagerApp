@@ -1,5 +1,6 @@
 package income;
 
+import account.Account;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,5 +30,8 @@ public class Income {
         this.comment = comment;
         this.incomeAddDate = LocalDate.now();
     }
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
 
 }
