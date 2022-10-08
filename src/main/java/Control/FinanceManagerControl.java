@@ -2,9 +2,7 @@ package Control;
 
 import exception.NoSuchOptionException;
 import io.ConsolePrinter;
-import modeldto.ExpenseDto;
-import modeldto.IncomeDto;
-import modeldto.SummaryDto;
+import modeldto.*;
 import repository.CategoryRepository;
 import repository.ExpenseRepository;
 import repository.IncomeRepository;
@@ -33,7 +31,7 @@ public class FinanceManagerControl {
 
 
     //Static variables to control program
-//    private static final int EXIT = 0;  - zakomentowane bo while (option != EXIT); mie działa EXIT = Option albo int
+//    private static final int EXIT = 0;  - zakomentowane bo while (option != EXIT); nie działa EXIT = Option albo int
 //    private static final int ADD_EXPENSE = 1;
 //    private static final int ADD_INCOME = 2;
 //    private static final int DELETE_EXPENSE = 3;
@@ -67,8 +65,8 @@ public class FinanceManagerControl {
                 case DISPLAY_ALL_EXPENSES -> displayAllExpensesMenu();
                 case DISPLAY_ALL_INCOMES -> displayAllIncomesMenu();
                 case DISPLAY_BALANCE -> displayAllBalanceMenu();
-                //case DISPLAY_ALL_EXPENSES_GROUPING_BY_CATEGORY -> displayAllExpensesGroupingByCategory();
-                //case DISPLAY_ALL_EXPENSES_BETWEEN_DATES -> displayAllExpensesBetweenDates();
+                case DISPLAY_ALL_EXPENSES_GROUPING_BY_CATEGORY -> displayAllExpensesGroupingByCategoryMenu();
+                case DISPLAY_ALL_EXPENSES_BETWEEN_DATES -> displayAllExpensesBetweenDatesMenu();
                 case ADD_NEW_CATEGORY -> addNewCategoryMenu();
                 case DELETE_CATEGORY -> deleteCategoryMenu();
                 default -> printer.printLine("Choose number from 0 - 12 !!!!! ");
@@ -84,12 +82,11 @@ public class FinanceManagerControl {
                 option = Option.createFromInt(getInt());
                 optionOk = true;
             } catch (NoSuchOptionException e) {
-                printer.printLine(e.getMessage() + ", podaj ponownie:");
+                printer.printLine(e.getMessage() + ", Type again:");
             } catch (InputMismatchException ignored) {
-                printer.printLine("Wprowadzono wartość, która nie jest liczbą, podaj ponownie:");
+                printer.printLine("You entered a value that is not a number, please enter a numeric value!");
             }
         }
-
         return option;
     }
 
@@ -180,12 +177,21 @@ public class FinanceManagerControl {
         printer.printLine(balance + " zł");
     }
 
-//    public void displayAllExpensesGroupingByCategory() {
-//        SummaryExtendDtos summaryExtendDtos = summaryService.summaryExtendDtos();
-//        printLine(summaryExtendDtos);
-//
-//    }
-//    public void displayAllExpensesBetweenDates() {}
+    public void displayAllExpensesGroupingByCategoryMenu() {
+        SummaryExtendDtos summaryExtendDtos = summaryService.summaryExtendDtos();
+        printer.printLine(String.valueOf(summaryExtendDtos));
+
+    }
+
+    public void displayAllExpensesBetweenDatesMenu() {
+        printer.printLine("Type start and end date in format yyyy-mm-dd");
+        printer.printLine("Start date: ");
+        String startDate = scanner.next();
+        printer.printLine("End date: ");
+        String endDate = scanner.next();
+        Set<PrintExpenseDto> expensesBetweenDate = expenseService.getExpensesBetweenDate(startDate, endDate);
+        printer.printLine((expensesBetweenDate).toString());
+    }
 
     public void addNewCategoryMenu() {
         printer.printLine("Type category name: ");
@@ -201,7 +207,7 @@ public class FinanceManagerControl {
     }
 
     private void exitAppMenu() {
-        printer.printLine("Koniec programu, papa!");
+        printer.printLine("The program has ended, Bye bye!");
         close(); // close input stream
     }
 
@@ -209,12 +215,19 @@ public class FinanceManagerControl {
         scanner.close();
     }
 
-    public int getInt() {
-        int number = scanner.nextInt();
+//    public int getInt() {
+//        int number = scanner.nextInt();
+//        scanner.nextLine();
+//        return number;
+//    }
+public int getInt() {
+    try {
+        return scanner.nextInt();
+    } finally {
         scanner.nextLine();
-        return number;
     }
 
+}
     private enum Option {
 
         EXIT(0, "Exit"),

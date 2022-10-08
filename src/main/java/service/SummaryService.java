@@ -43,17 +43,17 @@ public class SummaryService {
     }
 
 
-//    public SummaryExtendDtos summaryExtendDtos() {
-//        List<Object[]> expenseGroupByCategoryList = expenseRepository.findExpenseSummaryGroupByCategory();
-//        SummaryExtendDtos summaryExtendDtos = new SummaryExtendDtos();
-//        for (Object[] objects : expenseGroupByCategoryList) {
-//            BigDecimal totalCost = (BigDecimal) objects[0];
-//            String categoryName = (String) objects[1];
-//            Long numberOfExpenses = (Long) objects[2];
-//            SummaryExpenseDto summaryExpanseDto = new SummaryExpenseDto(categoryName, totalCost, numberOfExpenses);
-//            summaryExtendDtos.getSummaryExpanseDtoList().add(summaryExpanseDto);
-//        }
-//
-//        return summaryExtendDtos;
-//    }
+    public SummaryExtendDtos summaryExtendDtos() {
+        List<Object[]> expenseGroupByCategoryList = expenseRepository.findExpenseSummaryGroupByCategory();
+        SummaryExtendDtos summaryExtendDtos = new SummaryExtendDtos();
+        for (Object[] objects : expenseGroupByCategoryList) {
+            BigDecimal totalCost = (BigDecimal) objects[0];
+            String categoryName = (String) objects[1];
+            Long numberOfExpenses = (Long) objects[2];
+            SummaryExpenseDto summaryExpanseDto = new SummaryExpenseDto(categoryName, totalCost, numberOfExpenses);
+            summaryExtendDtos.getSummaryExpanseDtoList().add(summaryExpanseDto);
+        }
+
+        return summaryExtendDtos;
+    }
 }
