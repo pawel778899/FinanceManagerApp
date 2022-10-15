@@ -1,4 +1,4 @@
-package Control;
+package control;
 
 import exception.NoSuchOptionException;
 import io.ConsolePrinter;
@@ -18,7 +18,6 @@ import java.util.Scanner;
 import java.util.Set;
 
 
-
 public class FinanceManagerControl {
 
     private static final CategoryRepository categoryRepository = new CategoryRepository();
@@ -26,30 +25,14 @@ public class FinanceManagerControl {
     private static final ExpenseRepository expenseRepository = new ExpenseRepository();
     private static final AccountRepository accountRepository = new AccountRepository();
     private static final AccountService accountService = new AccountService(accountRepository);
-    private static final ExpenseService expenseService = new ExpenseService(expenseRepository, categoryRepository,accountRepository);
+    private static final ExpenseService expenseService = new ExpenseService(expenseRepository, categoryRepository, accountRepository);
     private static final IncomeRepository incomeRepository = new IncomeRepository();
     private static final IncomeService incomeService = new IncomeService(incomeRepository);
     private static final SummaryService summaryService = new SummaryService(expenseRepository, incomeRepository);
 
 
-
-    //Static variables to control program
-//    private static final int EXIT = 0;  - zakomentowane bo while (option != EXIT); nie działa EXIT = Option albo int
-//    private static final int ADD_EXPENSE = 1;
-//    private static final int ADD_INCOME = 2;
-//    private static final int DELETE_EXPENSE = 3;
-//    private static final int DELETE_INCOME = 4;
-//    private static final int DISPLAY_ALL_EXPENSES_AND_INCOMES = 5;
-//    private static final int DISPLAY_ALL_EXPENSES = 6;
-//    private static final int DISPLAY_ALL_INCOMES = 7;
-//    private static final int DISPLAY_BALANCE = 8;
-//    private static final int DISPLAY_ALL_EXPENSES_GROUPING_BY_CATEGORY = 9;
-//    private static final int DISPLAY_ALL_EXPENSES_BETWEEN_DATES = 10;
-//    private static final int ADD_NEW_CATEGORY = 11;
-//    private static final int DELETE_CATEGORY = 12;
-
     private final Scanner scanner = new Scanner(System.in);
-    //    DataReader dataReader = new DataReader();
+
     private final ConsolePrinter printer = new ConsolePrinter();
 
     public void controlLoop() {
@@ -92,7 +75,7 @@ public class FinanceManagerControl {
             } catch (NoSuchOptionException e) {
                 printer.printLine(e.getMessage() + ", Type again:");
             } catch (InputMismatchException ignored) {
-                printer.printLine("You entered a value that is not a number, please enter a numeric value!");
+                printer.printLine("You entered a value that is not a number, please enter a numeric value from 0 - 17 !");
             }
         }
         return option;
@@ -104,24 +87,6 @@ public class FinanceManagerControl {
             printer.printLine(option.toString());
         }
     }
-
-//    public void printOptions2() {
-//
-//        printLine("[***]>>>>>>>>>>Type the operation to execution: <<<<<<<<<<[***]");
-//        printLine(EXIT + " - Exit");
-//        printLine(ADD_EXPENSE + " - Add expense");
-//        printLine(ADD_INCOME + " - Add income");
-//        printLine(DELETE_EXPENSE + " - Delete expense");
-//        printLine(DELETE_INCOME + " - Delete income");
-//        printLine(DISPLAY_ALL_EXPENSES_AND_INCOMES + " - Display all expenses and incomes");
-//        printLine(DISPLAY_ALL_EXPENSES + " - Display all expenses");
-//        printLine(DISPLAY_ALL_INCOMES + " - Display all incomes");
-//        printLine(DISPLAY_BALANCE + " - Display balance");
-//        printLine(DISPLAY_ALL_EXPENSES_GROUPING_BY_CATEGORY + " - Display all expenses grouping by category");
-//        printLine(DISPLAY_ALL_EXPENSES_BETWEEN_DATES + " - Display all expenses between dates");
-//        printLine(ADD_NEW_CATEGORY + " - Add new category");
-//        printLine(DELETE_CATEGORY + " - Delete category");
-//    }
 
     public void addExpenseMenu() {
         printer.printLine("Type expense amount: ");
@@ -214,23 +179,26 @@ public class FinanceManagerControl {
         categoryService.deleteCategory(categoryName);
     }
 
-    public void addAccountMenu(){
+    public void addAccountMenu() {
         printer.printLine("Type account number: ");
         String accountNumber = scanner.nextLine();
         printer.printLine("Type account name: ");
         String accountName = scanner.nextLine();
-        accountService.addAccount(accountName,accountNumber);
+        accountService.addAccount(accountName, accountNumber);
     }
-    public void deleteAccountMenu(){
+
+    public void deleteAccountMenu() {
         printer.printLine("Delete account name: ");
         String accountName = scanner.nextLine();
         accountService.deleteAccount(accountName);
     }
+
     public void displayAllAccountsMenu() {
         Set<Account> accounts = accountService.getAccount();
         printer.printLine(accounts.toString());
     }
-    public void addIncomeToAccountMenu(){
+
+    public void addIncomeToAccountMenu() {
         System.out.println("To which account should the expenses be added?");
         List<AccountDto> allAccounts = accountService.getAllAccounts();
         allAccounts.forEach(accountDto -> {
@@ -245,7 +213,7 @@ public class FinanceManagerControl {
         incomeService.addIncomeWithAccount(incomeDto);
     }
 
-    public void addExpenseToAccountMenu(){
+    public void addExpenseToAccountMenu() {
         System.out.println("Which account ?: Type id.");
         List<AccountDto> allAccounts = accountService.getAllAccounts();
         allAccounts.forEach(accountDto -> {
@@ -259,9 +227,10 @@ public class FinanceManagerControl {
         String category = scanner.nextLine();
         System.out.println("Type comment (optionally): ");
         String comment = scanner.nextLine();
-        ExpenseDto expenseDto = new ExpenseDto(totalCost, comment, category,accountId);
+        ExpenseDto expenseDto = new ExpenseDto(totalCost, comment, category, accountId);
         expenseService.addExpenseWithAccount(expenseDto);
     }
+
     private void exitAppMenu() {
         printer.printLine("The program has ended, Bye bye!");
         close(); // close input stream
@@ -271,19 +240,15 @@ public class FinanceManagerControl {
         scanner.close();
     }
 
-//    public int getInt() {
-//        int number = scanner.nextInt();
-//        scanner.nextLine();
-//        return number;
-//    }
-public int getInt() {
-    try {
-        return scanner.nextInt();
-    } finally {
-        scanner.nextLine();
+    public int getInt() {
+        try {
+            return scanner.nextInt();
+        } finally {
+            scanner.nextLine();
+        }
+
     }
 
-}
     private enum Option {
 
         EXIT(0, "Exit"),
@@ -299,10 +264,10 @@ public int getInt() {
         DISPLAY_ALL_EXPENSES_BETWEEN_DATES(10, "Display all expenses between dates"),
         ADD_NEW_CATEGORY(11, "Add new category"),
         DELETE_CATEGORY(12, "Delete category"),
-        ADD_ACCOUNT(13,"Add account"),
-        DELETE_ACCOUNT(14,"Delete account"),
-        DISPLAY_ALL_ACCOUNTS(15,"Display all accounts"),
-        ADD_INCOME_TO_ACCOUNT(16,"Add income to account"),
+        ADD_ACCOUNT(13, "Add account"),
+        DELETE_ACCOUNT(14, "Delete account"),
+        DISPLAY_ALL_ACCOUNTS(15, "Display all accounts"),
+        ADD_INCOME_TO_ACCOUNT(16, "Add income to account"),
         ADD_EXPENSE_TO_ACCOUNT(17, "Add expense to account");
         private final int value;
         private final String description;
@@ -329,7 +294,7 @@ public int getInt() {
             try {
                 return Option.values()[option];
             } catch (ArrayIndexOutOfBoundsException e) {
-                throw new NoSuchOptionException("No option for this id !" + option);
+                throw new NoSuchOptionException("Choose  id from the list ! " + option);
             }
         }
 
