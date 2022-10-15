@@ -32,5 +32,8 @@ public class IncomeService {
                 .map(i->new IncomeDto(i.getAmount(), i.getComment()))
                 .collect(Collectors.toSet());
     }
+
+    public void addIncomeWithAccount(IncomeDto incomeDto) {
+    }
 }
 

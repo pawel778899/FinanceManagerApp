@@ -2,18 +2,18 @@ package Control;
 
 import exception.NoSuchOptionException;
 import io.ConsolePrinter;
+import model.Account;
 import modeldto.*;
+import repository.AccountRepository;
 import repository.CategoryRepository;
 import repository.ExpenseRepository;
 import repository.IncomeRepository;
-import service.CategoryService;
-import service.ExpenseService;
-import service.IncomeService;
-import service.SummaryService;
+import service.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -24,10 +24,13 @@ public class FinanceManagerControl {
     private static final CategoryRepository categoryRepository = new CategoryRepository();
     private static final CategoryService categoryService = new CategoryService(categoryRepository);
     private static final ExpenseRepository expenseRepository = new ExpenseRepository();
-    private static final ExpenseService expenseService = new ExpenseService(expenseRepository, categoryRepository);
+    private static final AccountRepository accountRepository = new AccountRepository();
+    private static final AccountService accountService = new AccountService(accountRepository);
+    private static final ExpenseService expenseService = new ExpenseService(expenseRepository, categoryRepository,accountRepository);
     private static final IncomeRepository incomeRepository = new IncomeRepository();
     private static final IncomeService incomeService = new IncomeService(incomeRepository);
     private static final SummaryService summaryService = new SummaryService(expenseRepository, incomeRepository);
+
 
 
     //Static variables to control program
@@ -69,7 +72,12 @@ public class FinanceManagerControl {
                 case DISPLAY_ALL_EXPENSES_BETWEEN_DATES -> displayAllExpensesBetweenDatesMenu();
                 case ADD_NEW_CATEGORY -> addNewCategoryMenu();
                 case DELETE_CATEGORY -> deleteCategoryMenu();
-                default -> printer.printLine("Choose number from 0 - 12 !!!!! ");
+                case ADD_ACCOUNT -> addAccountMenu();
+                case DELETE_ACCOUNT -> deleteAccountMenu();
+                case DISPLAY_ALL_ACCOUNTS -> displayAllAccountsMenu();
+                case ADD_INCOME_TO_ACCOUNT -> addIncomeToAccountMenu();
+                case ADD_EXPENSE_TO_ACCOUNT -> addExpenseToAccountMenu();
+                default -> printer.printLine("Choose number from 0 - 17 !!!!! ");
             }
         } while (option != Option.EXIT);
     }
@@ -206,6 +214,54 @@ public class FinanceManagerControl {
         categoryService.deleteCategory(categoryName);
     }
 
+    public void addAccountMenu(){
+        printer.printLine("Type account number: ");
+        String accountNumber = scanner.nextLine();
+        printer.printLine("Type account name: ");
+        String accountName = scanner.nextLine();
+        accountService.addAccount(accountName,accountNumber);
+    }
+    public void deleteAccountMenu(){
+        printer.printLine("Delete account name: ");
+        String accountName = scanner.nextLine();
+        accountService.deleteAccount(accountName);
+    }
+    public void displayAllAccountsMenu() {
+        Set<Account> accounts = accountService.getAccount();
+        printer.printLine(accounts.toString());
+    }
+    public void addIncomeToAccountMenu(){
+        System.out.println("To which account should the expenses be added?");
+        List<AccountDto> allAccounts = accountService.getAllAccounts();
+        allAccounts.forEach(accountDto -> {
+            System.out.println("Id: " + accountDto.getId() + " accountNumber " + accountDto.getAccountNumber() + " accountName " + accountDto.getName());
+        });
+        Long accountId = scanner.nextLong();
+        System.out.println("Type income amount: ");
+        BigDecimal totalCost = new BigDecimal(String.valueOf(scanner.nextBigDecimal()));
+        System.out.println("Type comment (optionally): ");
+        String comment = scanner.next();
+        IncomeDto incomeDto = new IncomeDto(totalCost, comment, accountId);
+        incomeService.addIncomeWithAccount(incomeDto);
+    }
+
+    public void addExpenseToAccountMenu(){
+        System.out.println("Which account ?: Type id.");
+        List<AccountDto> allAccounts = accountService.getAllAccounts();
+        allAccounts.forEach(accountDto -> {
+            System.out.println("Id: " + accountDto.getId() + " accountNumber " + accountDto.getAccountNumber() + " accountName " + accountDto.getName());
+        });
+        Long accountId = scanner.nextLong();
+        System.out.println("Type expense amount: ");
+        BigDecimal totalCost = new BigDecimal(String.valueOf(scanner.nextBigDecimal())).setScale(2, RoundingMode.CEILING);
+        scanner.nextLine();
+        System.out.println("Type expense category: ");
+        String category = scanner.nextLine();
+        System.out.println("Type comment (optionally): ");
+        String comment = scanner.nextLine();
+        ExpenseDto expenseDto = new ExpenseDto(totalCost, comment, category,accountId);
+        expenseService.addExpenseWithAccount(expenseDto);
+    }
     private void exitAppMenu() {
         printer.printLine("The program has ended, Bye bye!");
         close(); // close input stream
@@ -242,8 +298,12 @@ public int getInt() {
         DISPLAY_ALL_EXPENSES_GROUPING_BY_CATEGORY(9, "Display all expenses grouping by category"),
         DISPLAY_ALL_EXPENSES_BETWEEN_DATES(10, "Display all expenses between dates"),
         ADD_NEW_CATEGORY(11, "Add new category"),
-        DELETE_CATEGORY(12, "Delete category");
-
+        DELETE_CATEGORY(12, "Delete category"),
+        ADD_ACCOUNT(13,"Add account"),
+        DELETE_ACCOUNT(14,"Delete account"),
+        DISPLAY_ALL_ACCOUNTS(15,"Display all accounts"),
+        ADD_INCOME_TO_ACCOUNT(16,"Add income to account"),
+        ADD_EXPENSE_TO_ACCOUNT(17, "Add expense to account");
         private final int value;
         private final String description;
 
@@ -269,7 +329,7 @@ public int getInt() {
             try {
                 return Option.values()[option];
             } catch (ArrayIndexOutOfBoundsException e) {
-                throw new NoSuchOptionException("Brak opcji o id " + option);
+                throw new NoSuchOptionException("No option for this id !" + option);
             }
         }
 
